@@ -1,0 +1,32 @@
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=136295.86..136367.97 rows=618 width=27) (actual time=235.233..239.259 rows=719 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=135295.84..135296.61 rows=309 width=27) (actual time=226.005..226.015 rows=240 loops=3)
+         Sort Key: tr.averagerating DESC
+         Sort Method: quicksort  Memory: 35kB
+         Worker 0:  Sort Method: quicksort  Memory: 36kB
+         Worker 1:  Sort Method: quicksort  Memory: 35kB
+         ->  Parallel Hash Join  (cost=124334.65..135283.06 rows=309 width=27) (actual time=188.333..225.887 rows=240 loops=3)
+               Hash Cond: ((tr.tconst)::text = (tb.tconst)::text)
+               ->  Parallel Bitmap Heap Scan on title_ratings tr  (cost=2727.38..13516.74 rows=60589 width=16) (actual time=7.817..37.958 rows=50218 loops=3)
+                     Recheck Cond: (averagerating > 8.5)
+                     Heap Blocks: exact=3126
+                     ->  Bitmap Index Scan on idx_title_ratings_averagerating  (cost=0.00..2691.02 rows=145413 width=0) (actual time=6.966..6.966 rows=150655 loops=1)
+                           Index Cond: (averagerating > 8.5)
+               ->  Parallel Hash  (cost=121297.82..121297.82 rows=24756 width=31) (actual time=179.345..179.346 rows=22842 loops=3)
+                     Buckets: 131072 (originally 65536)  Batches: 1 (originally 1)  Memory Usage: 5984kB
+                     ->  Parallel Bitmap Heap Scan on title_basics tb  (cost=664.90..121297.82 rows=24756 width=31) (actual time=7.675..170.345 rows=22842 loops=3)
+                           Recheck Cond: (startyear = 1994)
+                           Heap Blocks: exact=7178
+                           ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..650.05 rows=59415 width=0) (actual time=3.800..3.800 rows=68526 loops=1)
+                                 Index Cond: (startyear = 1994)
+ Planning Time: 1.461 ms
+ JIT:
+   Functions: 45
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.274 ms (Deform 0.687 ms), Inlining 0.000 ms, Optimization 1.079 ms, Emission 15.994 ms, Total 18.346 ms
+ Execution Time: 265.039 ms
+(28 rows)
+
