@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS title_basics (
 CREATE TABLE IF NOT EXISTS title_akas (
     titleId VARCHAR(12),
     ordering INTEGER,
-    title VARCHAR(500),
+    title VARCHAR(1000),
     region VARCHAR(4),
     language VARCHAR(3),
     types VARCHAR(100),
