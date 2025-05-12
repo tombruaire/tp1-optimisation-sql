@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS title_principals (
     ordering INTEGER,
     nconst VARCHAR(12),
     category VARCHAR(50),
-    job VARCHAR(200),
+    job TEXT,
     characters TEXT,
     PRIMARY KEY (tconst, ordering)
     -- FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
