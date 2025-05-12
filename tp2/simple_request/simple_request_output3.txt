@@ -1,0 +1,38 @@
+                                                                       QUERY PLAN                                                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=5853.20..271519.11 rows=435711 width=86) (actual time=23.690..189.790 rows=438620 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Bitmap Heap Scan on title_basics  (cost=4853.20..226948.01 rows=181546 width=86) (actual time=15.086..170.389 rows=146207 loops=3)
+         Recheck Cond: (startyear = 2020)
+         Rows Removed by Index Recheck: 672361
+         Heap Blocks: exact=11052 lossy=10072
+         ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..4744.27 rows=435711 width=0) (actual time=19.725..19.726 rows=438620 loops=1)
+               Index Cond: (startyear = 2020)
+ Planning Time: 0.606 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.470 ms (Deform 0.292 ms), Inlining 0.000 ms, Optimization 0.456 ms, Emission 9.281 ms, Total 10.207 ms
+ Execution Time: 209.816 ms
+(15 rows)
+
+                                                                       QUERY PLAN                                                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=5853.20..271519.11 rows=435711 width=35) (actual time=19.919..225.158 rows=438620 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Bitmap Heap Scan on title_basics  (cost=4853.20..226948.01 rows=181546 width=35) (actual time=10.333..203.328 rows=146207 loops=3)
+         Recheck Cond: (startyear = 2020)
+         Rows Removed by Index Recheck: 672361
+         Heap Blocks: exact=11917 lossy=10986
+         ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..4744.27 rows=435711 width=0) (actual time=14.203..14.203 rows=438620 loops=1)
+               Index Cond: (startyear = 2020)
+ Planning Time: 0.058 ms
+ JIT:
+   Functions: 12
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.663 ms (Deform 0.334 ms), Inlining 0.000 ms, Optimization 0.409 ms, Emission 6.995 ms, Total 8.067 ms
+ Execution Time: 236.612 ms
+(15 rows)
+

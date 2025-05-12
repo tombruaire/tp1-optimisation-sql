@@ -1,0 +1,16 @@
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..277712.45 rows=435511 width=86) (actual time=24.731..1568.449 rows=438620 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233161.35 rows=181463 width=86) (actual time=21.340..1535.839 rows=146207 loops=3)
+         Filter: (startyear = 2020)
+         Rows Removed by Filter: 3737132
+ Planning Time: 8.720 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.721 ms (Deform 0.233 ms), Inlining 0.000 ms, Optimization 2.562 ms, Emission 19.743 ms, Total 23.027 ms
+ Execution Time: 1708.356 ms
+(12 rows)
+
