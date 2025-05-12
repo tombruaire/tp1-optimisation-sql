@@ -1,0 +1,8 @@
+                                                                         QUERY PLAN                                                                         
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_title_basics_startyear_titletype on title_basics  (cost=0.43..763.88 rows=193 width=86) (actual time=0.182..10.236 rows=2011 loops=1)
+   Index Cond: ((startyear = 1950) AND ((titletype)::text = 'movie'::text))
+ Planning Time: 1.799 ms
+ Execution Time: 10.474 ms
+(4 rows)
+

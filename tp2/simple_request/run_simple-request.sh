@@ -16,10 +16,10 @@ fi
 
 # Copy the simple request file to the container
 echo "Copying simple-request.sql file to the container..."
-docker cp simple-request.sql postgres17:/tmp/simple-request.sql
+docker cp simple_request.sql postgres17:/tmp/simple_request.sql
 
 # Execute the simple request
 echo "Executing simple request..."
-docker exec -i postgres17 psql -U admin -d imdb_clone -f /tmp/simple-request.sql > simple_request_output3.txt
+docker exec -i postgres17 psql -U admin -d imdb_clone -f /tmp/simple_request.sql > simple_request_output3.txt
 
 echo "Simple request finished. Results stored in simple_request_output.txt"
