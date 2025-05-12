@@ -47,7 +47,7 @@ COPY title_principals
 FROM
     PROGRAM 'zcat /import/title.principals.tsv.gz' WITH (
         FORMAT csv,
-        DELIMITER E '\t',
+        DELIMITER E'\t',
         HEADER,
         NULL '\N',
         QUOTE E'\001'

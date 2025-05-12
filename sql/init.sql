@@ -13,30 +13,30 @@ CREATE TABLE IF NOT EXISTS title_basics (
 CREATE TABLE IF NOT EXISTS title_akas (
     titleId VARCHAR(12),
     ordering INTEGER,
-    title VARCHAR(1000),
+    title TEXT,
     region VARCHAR(4),
     language VARCHAR(3),
     types VARCHAR(100),
     attributes VARCHAR(100),
     isOriginalTitle BOOLEAN,
-    PRIMARY KEY (titleId, ordering),
-    FOREIGN KEY (titleId) REFERENCES title_basics(tconst)
+    PRIMARY KEY (titleId, ordering)
+    -- FOREIGN KEY (titleId) REFERENCES title_basics(tconst)
 );
 
 CREATE TABLE IF NOT EXISTS title_crew (
     tconst VARCHAR(12) PRIMARY KEY,
     directors TEXT,
-    writers TEXT,
-    FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
+    writers TEXT
+    -- FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
 );
 
 CREATE TABLE IF NOT EXISTS title_episode (
     tconst VARCHAR(12) PRIMARY KEY,
     parentTconst VARCHAR(12),
     seasonNumber INTEGER,
-    episodeNumber INTEGER,
-    FOREIGN KEY (tconst) REFERENCES title_basics(tconst),
-    FOREIGN KEY (parentTconst) REFERENCES title_basics(tconst)
+    episodeNumber INTEGER
+    -- FOREIGN KEY (tconst) REFERENCES title_basics(tconst),
+    -- FOREIGN KEY (parentTconst) REFERENCES title_basics(tconst)
 );
 
 CREATE TABLE IF NOT EXISTS title_principals (
@@ -46,15 +46,15 @@ CREATE TABLE IF NOT EXISTS title_principals (
     category VARCHAR(50),
     job VARCHAR(200),
     characters TEXT,
-    PRIMARY KEY (tconst, ordering),
-    FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
+    PRIMARY KEY (tconst, ordering)
+    -- FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
 );
 
 CREATE TABLE IF NOT EXISTS title_ratings (
     tconst VARCHAR(12) PRIMARY KEY,
     averageRating DECIMAL(3, 1),
-    numVotes INTEGER,
-    FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
+    numVotes INTEGER
+    -- FOREIGN KEY (tconst) REFERENCES title_basics(tconst)
 );
 
 CREATE TABLE IF NOT EXISTS name_basics (
