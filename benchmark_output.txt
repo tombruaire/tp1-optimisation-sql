@@ -1,0 +1,223 @@
+Timing is on.
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..277712.45 rows=435511 width=86) (actual time=18.991..649.589 rows=438620 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233161.35 rows=181463 width=86) (actual time=14.275..621.507 rows=146207 loops=3)
+         Filter: (startyear = 2020)
+         Rows Removed by Filter: 3737132
+ Planning Time: 2.337 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.650 ms (Deform 0.326 ms), Inlining 0.000 ms, Optimization 0.992 ms, Emission 14.433 ms, Total 16.074 ms
+ Execution Time: 694.441 ms
+(12 rows)
+
+Time: 699.362 ms
+                                                                     QUERY PLAN                                                                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=20806.41..276300.40 rows=158168 width=31) (actual time=111.869..681.811 rows=203156 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Hash Join  (cost=19806.41..259483.60 rows=65903 width=31) (actual time=98.884..659.880 rows=67719 loops=3)
+         Hash Cond: ((tb.tconst)::text = (tr.tconst)::text)
+         ->  Parallel Seq Scan on title_basics tb  (cost=0.00..233161.35 rows=2482226 width=31) (actual time=1.207..292.766 rows=2007956 loops=3)
+               Filter: (startyear > 2010)
+               Rows Removed by Filter: 1875383
+         ->  Parallel Hash  (cost=18196.16..18196.16 rows=128820 width=20) (actual time=92.521..92.522 rows=104588 loops=3)
+               Buckets: 524288  Batches: 1  Memory Usage: 21344kB
+               ->  Parallel Seq Scan on title_ratings tr  (cost=0.00..18196.16 rows=128820 width=20) (actual time=8.376..60.490 rows=104588 loops=3)
+                     Filter: (averagerating > 8.0)
+                     Rows Removed by Filter: 417918
+ Planning Time: 3.217 ms
+ JIT:
+   Functions: 45
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 2.309 ms (Deform 1.027 ms), Inlining 0.000 ms, Optimization 0.995 ms, Emission 24.014 ms, Total 27.318 ms
+ Execution Time: 686.657 ms
+(19 rows)
+
+Time: 692.477 ms
+                                                                                     QUERY PLAN                                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1.43..7610.36 rows=100 width=153) (actual time=36.315..926.961 rows=100 loops=1)
+   ->  Nested Loop  (cost=1.43..68692431.79 rows=902787 width=153) (actual time=36.314..926.942 rows=100 loops=1)
+         ->  Merge Join  (cost=1.00..64105376.32 rows=902787 width=181) (actual time=35.491..891.755 rows=100 loops=1)
+               Merge Cond: ((tb.tconst)::text = (tp.tconst)::text)
+               ->  Index Scan using title_basics_pkey on title_basics tb  (cost=0.43..563028.97 rows=451813 width=31) (actual time=3.193..62.434 rows=12 loops=1)
+                     Filter: (startyear = 2019)
+                     Rows Removed by Filter: 289457
+               ->  Index Scan using title_principals_pkey on title_principals tp  (cost=0.56..63474020.60 rows=23267736 width=202) (actual time=1.422..649.078 rows=3512314 loops=1)
+         ->  Index Scan using name_basics_pkey on name_basics nb  (cost=0.43..5.08 rows=1 width=24) (actual time=0.351..0.351 rows=1 loops=100)
+               Index Cond: ((nconst)::text = (tp.nconst)::text)
+ Planning Time: 1.550 ms
+ Execution Time: 927.020 ms
+(12 rows)
+
+Time: 929.280 ms
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=279907.03..280138.91 rows=132 width=44) (actual time=440.155..447.218 rows=21 loops=1)
+   Group Key: tb.startyear
+   ->  Gather Merge  (cost=279907.03..280134.62 rows=264 width=44) (actual time=439.963..447.166 rows=63 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Partial GroupAggregate  (cost=278907.01..279104.12 rows=132 width=44) (actual time=412.404..418.079 rows=21 loops=3)
+               Group Key: tb.startyear
+               ->  Sort  (cost=278907.01..278955.88 rows=19546 width=10) (actual time=412.233..413.999 rows=50358 loops=3)
+                     Sort Key: tb.startyear
+                     Sort Method: quicksort  Memory: 3101kB
+                     Worker 0:  Sort Method: quicksort  Memory: 3110kB
+                     Worker 1:  Sort Method: quicksort  Memory: 3120kB
+                     ->  Parallel Hash Join  (cost=259236.11..277513.91 rows=19546 width=10) (actual time=321.908..406.858 rows=50358 loops=3)
+                           Hash Cond: ((tr.tconst)::text = (tb.tconst)::text)
+                           ->  Parallel Seq Scan on title_ratings tr  (cost=0.00..16563.33 rows=653132 width=16) (actual time=0.023..24.469 rows=522506 loops=3)
+                           ->  Parallel Hash  (cost=257421.09..257421.09 rows=145202 width=14) (actual time=317.145..317.146 rows=87719 loops=3)
+                                 Buckets: 524288  Batches: 1  Memory Usage: 16480kB
+                                 ->  Parallel Seq Scan on title_basics tb  (cost=0.00..257421.09 rows=145202 width=14) (actual time=8.200..289.245 rows=87719 loops=3)
+                                       Filter: ((startyear >= 2000) AND (startyear <= 2020) AND ((titletype)::text = 'movie'::text))
+                                       Rows Removed by Filter: 3795619
+ Planning Time: 0.527 ms
+ JIT:
+   Functions: 57
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 2.147 ms (Deform 0.981 ms), Inlining 0.000 ms, Optimization 1.196 ms, Emission 22.403 ms, Total 25.746 ms
+ Execution Time: 448.056 ms
+(26 rows)
+
+Time: 450.651 ms
+                                                            QUERY PLAN                                                            
+----------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..234265.25 rows=1039 width=86) (actual time=7.690..370.566 rows=7140 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233161.35 rows=433 width=86) (actual time=4.657..359.288 rows=2380 loops=3)
+         Filter: ((primarytitle)::text ~~ '%Star Wars%'::text)
+         Rows Removed by Filter: 3880959
+ Planning Time: 0.088 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.325 ms (Deform 0.129 ms), Inlining 0.000 ms, Optimization 0.309 ms, Emission 4.778 ms, Total 5.412 ms
+ Execution Time: 370.958 ms
+(12 rows)
+
+Time: 371.342 ms
+                                                                      QUERY PLAN                                                                       
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1000.43..11912.59 rows=1000 width=284) (actual time=0.474..179.539 rows=1000 loops=1)
+   ->  Gather  (cost=1000.43..1270510.14 rows=116339 width=284) (actual time=0.473..179.450 rows=1000 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Nested Loop  (cost=0.43..1257876.24 rows=48475 width=284) (actual time=0.452..170.274 rows=387 loops=3)
+               ->  Parallel Seq Scan on title_principals tp  (cost=0.00..982954.12 rows=48475 width=270) (actual time=0.018..0.244 rows=387 loops=3)
+                     Filter: ((category)::text = 'actor'::text)
+                     Rows Removed by Filter: 551
+               ->  Index Scan using name_basics_pkey on name_basics nb  (cost=0.43..5.67 rows=1 width=24) (actual time=0.439..0.439 rows=1 loops=1160)
+                     Index Cond: ((nconst)::text = (tp.nconst)::text)
+ Planning Time: 0.097 ms
+ Execution Time: 179.677 ms
+(12 rows)
+
+Time: 180.014 ms
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1000.00..42261.94 rows=1000 width=68) (actual time=0.922..681.712 rows=1000 loops=1)
+   ->  Gather  (cost=1000.00..821617.53 rows=19888 width=68) (actual time=0.921..681.614 rows=1000 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Parallel Seq Scan on title_akas  (cost=0.00..818628.72 rows=8287 width=68) (actual time=12.124..669.342 rows=428 loops=3)
+               Filter: (((region)::text = 'US'::text) AND ((language)::text = 'en'::text))
+               Rows Removed by Filter: 3125611
+ Planning Time: 0.774 ms
+ Execution Time: 681.848 ms
+(9 rows)
+
+Time: 682.990 ms
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=31897.62..32254.42 rows=3058 width=25) (actual time=56.909..59.405 rows=2908 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=30897.60..30901.42 rows=1529 width=25) (actual time=48.439..48.473 rows=969 loops=3)
+         Sort Key: title_basics.startyear DESC
+         Sort Method: quicksort  Memory: 105kB
+         Worker 0:  Sort Method: quicksort  Memory: 52kB
+         Worker 1:  Sort Method: quicksort  Memory: 53kB
+         ->  Nested Loop  (cost=0.43..30816.73 rows=1529 width=25) (actual time=0.241..48.157 rows=969 loops=3)
+               ->  Parallel Seq Scan on title_ratings  (cost=0.00..18196.16 rows=1529 width=10) (actual time=0.184..23.866 rows=969 loops=3)
+                     Filter: (numvotes > 100000)
+                     Rows Removed by Filter: 521537
+               ->  Index Scan using title_basics_pkey on title_basics  (cost=0.43..8.25 rows=1 width=35) (actual time=0.025..0.025 rows=1 loops=2908)
+                     Index Cond: ((tconst)::text = (title_ratings.tconst)::text)
+ Planning Time: 0.290 ms
+ Execution Time: 59.489 ms
+(16 rows)
+
+Time: 60.014 ms
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=71300.59..81901.22 rows=100 width=31) (actual time=198.200..200.257 rows=100 loops=1)
+   ->  Unique  (cost=71300.59..1398711.13 rows=12522 width=31) (actual time=198.199..200.251 rows=100 loops=1)
+         ->  Incremental Sort  (cost=71300.59..1398617.22 rows=12522 width=31) (actual time=198.198..200.237 rows=105 loops=1)
+               Sort Key: tr.averagerating DESC, tb.primarytitle, tb.startyear
+               Presorted Key: tr.averagerating
+               Full-sort Groups: 1  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
+               Pre-sorted Groups: 1  Sort Method: quicksort  Average Memory: 31kB  Peak Memory: 31kB
+               ->  Nested Loop  (cost=56554.39..1398014.07 rows=12522 width=31) (actual time=100.846..200.042 rows=129 loops=1)
+                     ->  Gather Merge  (cost=56553.95..152326.67 rows=822320 width=16) (actual time=98.253..101.933 rows=6609 loops=1)
+                           Workers Planned: 2
+                           Workers Launched: 2
+                           ->  Sort  (cost=55553.93..56410.51 rows=342633 width=16) (actual time=89.190..89.547 rows=3095 loops=3)
+                                 Sort Key: tr.averagerating DESC
+                                 Sort Method: external merge  Disk: 7944kB
+                                 Worker 0:  Sort Method: external merge  Disk: 7184kB
+                                 Worker 1:  Sort Method: external merge  Disk: 6888kB
+                                 ->  Parallel Seq Scan on title_ratings tr  (cost=0.00..18196.16 rows=342633 width=16) (actual time=0.034..39.487 rows=276016 loops=3)
+                                       Filter: (averagerating > 7.0)
+                                       Rows Removed by Filter: 246490
+                     ->  Index Scan using title_basics_pkey on title_basics tb  (cost=0.43..1.51 rows=1 width=35) (actual time=0.015..0.015 rows=0 loops=6609)
+                           Index Cond: ((tconst)::text = (tr.tconst)::text)
+                           Filter: (((genres)::text ~~ '%Action%'::text) AND (startyear > 2015))
+                           Rows Removed by Filter: 1
+ Planning Time: 0.197 ms
+ Execution Time: 200.722 ms
+(25 rows)
+
+Time: 201.333 ms
+                                                                             QUERY PLAN                                                                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=212155.73..212165.30 rows=82 width=29) (actual time=2518.530..2539.730 rows=74 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=211155.71..211155.81 rows=41 width=29) (actual time=2510.774..2510.782 rows=25 loops=3)
+         Sort Key: te.seasonnumber, te.episodenumber
+         Sort Method: quicksort  Memory: 26kB
+         Worker 0:  Sort Method: quicksort  Memory: 26kB
+         Worker 1:  Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=0.88..211154.61 rows=41 width=29) (actual time=829.574..2510.720 rows=25 loops=3)
+               ->  Nested Loop  (cost=0.45..211132.08 rows=41 width=18) (actual time=829.550..2510.509 rows=25 loops=3)
+                     ->  Parallel Seq Scan on title_episode te  (cost=0.00..101673.62 rows=3735362 width=28) (actual time=0.194..366.650 rows=2988207 loops=3)
+                     ->  Memoize  (cost=0.45..0.56 rows=1 width=10) (actual time=0.001..0.001 rows=0 loops=8964621)
+                           Cache Key: te.parenttconst
+                           Cache Mode: logical
+                           Hits: 2883341  Misses: 132497  Evictions: 19720  Overflows: 0  Memory Usage: 8193kB
+                           Worker 0:  Hits: 2843054  Misses: 131155  Evictions: 18371  Overflows: 0  Memory Usage: 8193kB
+                           Worker 1:  Hits: 2842334  Misses: 132240  Evictions: 19458  Overflows: 0  Memory Usage: 8193kB
+                           ->  Index Scan using title_basics_pkey on title_basics  (cost=0.43..0.55 rows=1 width=10) (actual time=0.010..0.010 rows=0 loops=395892)
+                                 Index Cond: ((tconst)::text = (te.parenttconst)::text)
+                                 Filter: ((primarytitle)::text = 'Game of Thrones'::text)
+                                 Rows Removed by Filter: 1
+               ->  Index Scan using title_basics_pkey on title_basics tb  (cost=0.43..0.55 rows=1 width=31) (actual time=0.007..0.007 rows=1 loops=74)
+                     Index Cond: ((tconst)::text = (te.tconst)::text)
+ Planning Time: 3.147 ms
+ JIT:
+   Functions: 51
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.224 ms (Deform 0.433 ms), Inlining 0.000 ms, Optimization 0.755 ms, Emission 14.362 ms, Total 16.342 ms
+ Execution Time: 2541.056 ms
+(29 rows)
+
+Time: 2545.356 ms (00:02.545)

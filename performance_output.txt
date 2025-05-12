@@ -1,0 +1,76 @@
+    table_name    | total_size | table_size | index_size 
+------------------+------------+------------+------------
+ title_principals | 9519 MB    | 6733 MB    | 2787 MB
+ title_akas       | 5422 MB    | 3852 MB    | 1571 MB
+ title_basics     | 1699 MB    | 1348 MB    | 351 MB
+ name_basics      | 1628 MB    | 1194 MB    | 434 MB
+ title_crew       | 1044 MB    | 693 MB     | 351 MB
+ title_episode    | 772 MB     | 503 MB     | 270 MB
+ title_ratings    | 126 MB     | 78 MB      | 47 MB
+(7 rows)
+
+    tablename     |       indexname       |                                              indexdef                                               
+------------------+-----------------------+-----------------------------------------------------------------------------------------------------
+ name_basics      | name_basics_pkey      | CREATE UNIQUE INDEX name_basics_pkey ON public.name_basics USING btree (nconst)
+ title_akas       | title_akas_pkey       | CREATE UNIQUE INDEX title_akas_pkey ON public.title_akas USING btree (titleid, ordering)
+ title_basics     | title_basics_pkey     | CREATE UNIQUE INDEX title_basics_pkey ON public.title_basics USING btree (tconst)
+ title_crew       | title_crew_pkey       | CREATE UNIQUE INDEX title_crew_pkey ON public.title_crew USING btree (tconst)
+ title_episode    | title_episode_pkey    | CREATE UNIQUE INDEX title_episode_pkey ON public.title_episode USING btree (tconst)
+ title_principals | title_principals_pkey | CREATE UNIQUE INDEX title_principals_pkey ON public.title_principals USING btree (tconst, ordering)
+ title_ratings    | title_ratings_pkey    | CREATE UNIQUE INDEX title_ratings_pkey ON public.title_ratings USING btree (tconst)
+(7 rows)
+
+    table_name    | row_count | dead_rows | last_vacuum |        last_autovacuum        | last_analyze |       last_autoanalyze        
+------------------+-----------+-----------+-------------+-------------------------------+--------------+-------------------------------
+ title_principals |  92505710 |         0 |             | 2025-05-12 11:01:13.613602+00 |              | 2025-05-12 11:01:16.771834+00
+ title_akas       |  52098036 |         0 |             | 2025-05-12 10:54:36.018177+00 |              | 2025-05-12 10:54:39.883228+00
+ name_basics      |  14402169 |         0 |             | 2025-05-12 10:56:55.769806+00 |              | 2025-05-12 10:56:58.970619+00
+ title_crew       |  11673630 |         0 |             | 2025-05-12 10:52:03.524168+00 |              | 2025-05-12 10:52:07.266663+00
+ title_basics     |  11644675 |         0 |             | 2025-05-12 10:49:55.426178+00 |              | 2025-05-12 10:49:58.468656+00
+ title_episode    |   8964870 |         0 |             | 2025-05-12 10:52:43.038359+00 |              | 2025-05-12 10:52:46.118876+00
+ title_ratings    |   1567518 |         0 |             | 2025-05-12 10:54:53.057226+00 |              | 2025-05-12 10:54:53.994081+00
+(7 rows)
+
+    table_name    | seq_scan | seq_tup_read | idx_scan | idx_tup_fetch 
+------------------+----------+--------------+----------+---------------
+ title_basics     |       49 |    186400256 |  1621505 |       2779329
+ title_ratings    |       49 |     25080288 |       32 |             0
+ title_episode    |       13 |     35858484 |        8 |             0
+ title_akas       |       13 |     55827801 |        0 |             0
+ title_principals |       13 |        12267 |        4 |      14049256
+ title_crew       |        1 |            0 |        0 |             0
+ name_basics      |        1 |            0 |     5199 |          5199
+(7 rows)
+
+ schemaname |    table_name    |      index_name       | number_of_scans | tuples_read | tuples_fetched 
+------------+------------------+-----------------------+-----------------+-------------+----------------
+ public     | title_basics     | title_basics_pkey     |         1621505 |     2779377 |        2779329
+ public     | name_basics      | name_basics_pkey      |            5199 |        5199 |           5199
+ public     | title_ratings    | title_ratings_pkey    |              32 |          32 |              0
+ public     | title_episode    | title_episode_pkey    |               8 |           8 |              0
+ public     | title_principals | title_principals_pkey |               4 |    14049256 |       14049256
+ public     | title_crew       | title_crew_pkey       |               0 |           0 |              0
+ public     | title_akas       | title_akas_pkey       |               0 |           0 |              0
+(7 rows)
+
+ locktype | relation |      mode       | granted 
+----------+----------+-----------------+---------
+ relation | pg_locks | AccessShareLock | t
+(1 row)
+
+  datname   | usename | application_name | client_addr |         backend_start         | state  |         query         
+------------+---------+------------------+-------------+-------------------------------+--------+-----------------------
+ imdb_clone | admin   | psql             |             | 2025-05-12 11:07:59.270323+00 | active | SELECT               +
+            |         |                  |             |                               |        |     datname,         +
+            |         |                  |             |                               |        |     usename,         +
+            |         |                  |             |                               |        |     application_name,+
+            |         |                  |             |                               |        |     client_addr,     +
+            |         |                  |             |                               |        |     backend_start,   +
+            |         |                  |             |                               |        |     state,           +
+            |         |                  |             |                               |        |     query            +
+            |         |                  |             |                               |        | FROM                 +
+            |         |                  |             |                               |        |     pg_stat_activity +
+            |         |                  |             |                               |        | WHERE                +
+            |         |                  |             |                               |        |     state != 'idle';
+(1 row)
+
