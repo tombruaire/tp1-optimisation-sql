@@ -1,0 +1,13 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on title_basics  (cost=37.11..11758.25 rows=193 width=86) (actual time=0.819..58.211 rows=2011 loops=1)
+   Recheck Cond: (startyear = 1950)
+   Filter: ((titletype)::text = 'movie'::text)
+   Rows Removed by Filter: 6265
+   Heap Blocks: exact=3280
+   ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..37.06 rows=3283 width=0) (actual time=0.525..0.529 rows=8276 loops=1)
+         Index Cond: (startyear = 1950)
+ Planning Time: 3.280 ms
+ Execution Time: 58.488 ms
+(9 rows)
+

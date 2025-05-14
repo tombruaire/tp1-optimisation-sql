@@ -1,0 +1,19 @@
+                                                                       QUERY PLAN                                                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=5853.20..271519.11 rows=435711 width=86) (actual time=25.141..277.999 rows=438620 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Bitmap Heap Scan on title_basics  (cost=4853.20..226948.01 rows=181546 width=86) (actual time=15.331..253.599 rows=146207 loops=3)
+         Recheck Cond: (startyear = 2020)
+         Rows Removed by Index Recheck: 672361
+         Heap Blocks: exact=11133 lossy=10317
+         ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..4744.27 rows=435711 width=0) (actual time=21.092..21.093 rows=438620 loops=1)
+               Index Cond: (startyear = 2020)
+ Planning Time: 0.963 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.597 ms (Deform 0.349 ms), Inlining 0.000 ms, Optimization 0.866 ms, Emission 9.456 ms, Total 10.920 ms
+ Execution Time: 309.741 ms
+(15 rows)
+

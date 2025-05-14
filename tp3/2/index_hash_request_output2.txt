@@ -1,0 +1,8 @@
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_title_basics_tconst_hash on title_basics  (cost=0.00..8.02 rows=1 width=84) (actual time=0.081..0.082 rows=1 loops=1)
+   Index Cond: ((tconst)::text = 'tt0068646'::text)
+ Planning Time: 1.133 ms
+ Execution Time: 0.142 ms
+(4 rows)
+

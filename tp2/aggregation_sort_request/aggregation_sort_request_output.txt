@@ -1,0 +1,35 @@
+                                                                                             QUERY PLAN                                                                                              
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=144588.00..144588.33 rows=132 width=44) (actual time=303.554..306.608 rows=11 loops=1)
+   Sort Key: (avg(tr.averagerating)) DESC
+   Sort Method: quicksort  Memory: 25kB
+   ->  Finalize GroupAggregate  (cost=144518.18..144583.35 rows=132 width=44) (actual time=302.575..306.572 rows=11 loops=1)
+         Group Key: tb.startyear
+         ->  Gather Merge  (cost=144518.18..144579.06 rows=264 width=44) (actual time=302.429..306.537 rows=33 loops=1)
+               Workers Planned: 2
+               Workers Launched: 2
+               ->  Partial GroupAggregate  (cost=143518.15..143548.56 rows=132 width=44) (actual time=287.627..288.706 rows=11 loops=3)
+                     Group Key: tb.startyear
+                     ->  Sort  (cost=143518.15..143525.34 rows=2876 width=10) (actual time=287.474..287.826 rows=10328 loops=3)
+                           Sort Key: tb.startyear
+                           Sort Method: quicksort  Memory: 699kB
+                           Worker 0:  Sort Method: quicksort  Memory: 715kB
+                           Worker 1:  Sort Method: quicksort  Memory: 709kB
+                           ->  Parallel Hash Join  (cost=125075.13..143352.93 rows=2876 width=10) (actual time=151.099..286.215 rows=10328 loops=3)
+                                 Hash Cond: ((tr.tconst)::text = (tb.tconst)::text)
+                                 ->  Parallel Seq Scan on title_ratings tr  (cost=0.00..16563.33 rows=653132 width=16) (actual time=0.028..57.143 rows=522506 loops=3)
+                                 ->  Parallel Hash  (cost=124807.95..124807.95 rows=21375 width=14) (actual time=148.878..148.879 rows=17088 loops=3)
+                                       Buckets: 65536  Batches: 1  Memory Usage: 3008kB
+                                       ->  Parallel Bitmap Heap Scan on title_basics tb  (cost=13961.60..124807.95 rows=21375 width=14) (actual time=18.480..144.575 rows=17088 loops=3)
+                                             Recheck Cond: ((startyear >= 1990) AND (startyear <= 2000) AND ((titletype)::text = 'movie'::text))
+                                             Heap Blocks: exact=5136
+                                             ->  Bitmap Index Scan on idx_title_basics_startyear_titletype  (cost=0.00..13948.77 rows=51301 width=0) (actual time=19.762..19.762 rows=51264 loops=1)
+                                                   Index Cond: ((startyear >= 1990) AND (startyear <= 2000) AND ((titletype)::text = 'movie'::text))
+ Planning Time: 2.543 ms
+ JIT:
+   Functions: 57
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 3.365 ms (Deform 1.603 ms), Inlining 0.000 ms, Optimization 1.834 ms, Emission 25.233 ms, Total 30.433 ms
+ Execution Time: 342.069 ms
+(31 rows)
+

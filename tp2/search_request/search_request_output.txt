@@ -1,0 +1,11 @@
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.86..16.91 rows=1 width=27) (actual time=1.867..1.874 rows=1 loops=1)
+   ->  Index Scan using title_basics_pkey on title_basics tb  (cost=0.43..8.45 rows=1 width=31) (actual time=1.709..1.716 rows=1 loops=1)
+         Index Cond: ((tconst)::text = 'tt0111161'::text)
+   ->  Index Scan using idx_title_ratings_tconst on title_ratings tr  (cost=0.43..8.45 rows=1 width=16) (actual time=0.155..0.155 rows=1 loops=1)
+         Index Cond: ((tconst)::text = 'tt0111161'::text)
+ Planning Time: 1.791 ms
+ Execution Time: 1.974 ms
+(7 rows)
+

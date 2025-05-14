@@ -1,0 +1,30 @@
+                                                                             QUERY PLAN                                                                              
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=140975.28..141047.38 rows=618 width=27) (actual time=287.536..292.680 rows=719 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=139975.26..139976.03 rows=309 width=27) (actual time=275.643..275.656 rows=240 loops=3)
+         Sort Key: tr.averagerating DESC
+         Sort Method: quicksort  Memory: 37kB
+         Worker 0:  Sort Method: quicksort  Memory: 33kB
+         Worker 1:  Sort Method: quicksort  Memory: 36kB
+         ->  Parallel Hash Join  (cost=121607.27..139962.48 rows=309 width=27) (actual time=179.070..275.500 rows=240 loops=3)
+               Hash Cond: ((tr.tconst)::text = (tb.tconst)::text)
+               ->  Parallel Seq Scan on title_ratings tr  (cost=0.00..18196.16 rows=60589 width=16) (actual time=2.916..96.045 rows=50218 loops=3)
+                     Filter: (averagerating > 8.5)
+                     Rows Removed by Filter: 472288
+               ->  Parallel Hash  (cost=121297.82..121297.82 rows=24756 width=31) (actual time=170.082..170.084 rows=22842 loops=3)
+                     Buckets: 131072 (originally 65536)  Batches: 1 (originally 1)  Memory Usage: 6016kB
+                     ->  Parallel Bitmap Heap Scan on title_basics tb  (cost=664.90..121297.82 rows=24756 width=31) (actual time=8.463..160.718 rows=22842 loops=3)
+                           Recheck Cond: (startyear = 1994)
+                           Heap Blocks: exact=7114
+                           ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..650.05 rows=59415 width=0) (actual time=3.640..3.640 rows=68526 loops=1)
+                                 Index Cond: (startyear = 1994)
+ Planning Time: 4.821 ms
+ JIT:
+   Functions: 45
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.164 ms (Deform 0.607 ms), Inlining 0.000 ms, Optimization 1.952 ms, Emission 17.489 ms, Total 20.605 ms
+ Execution Time: 317.066 ms
+(26 rows)
+
