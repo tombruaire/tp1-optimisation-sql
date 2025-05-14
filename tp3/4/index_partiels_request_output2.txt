@@ -1,0 +1,91 @@
+ decade | number_of_titles | number_of_movies 
+--------+------------------+------------------
+   2030 |               13 |                3
+   2020 |          2442560 |           105831
+   2010 |          3845455 |           168277
+   2000 |          1626655 |            78266
+   1990 |           751988 |            45959
+   1980 |           463499 |            44193
+   1970 |           397281 |            40484
+   1960 |           324164 |            31862
+   1950 |           164342 |            23858
+   1940 |            29566 |            14720
+   1930 |            32760 |            20569
+   1920 |            36934 |            22093
+   1910 |            72576 |            12992
+   1900 |            25769 |              184
+   1890 |             6091 |               19
+   1880 |               80 |                1
+   1870 |               32 |                0
+(17 rows)
+
+ startyear | number_of_titles | number_of_movies 
+-----------+------------------+------------------
+      2010 |           264160 |            12964
+      2011 |           296866 |            13912
+      2012 |           336950 |            14977
+      2013 |           361437 |            15639
+      2014 |           383301 |            16854
+      2015 |           403899 |            17461
+      2016 |           429200 |            18634
+      2017 |           453510 |            19116
+      2018 |           459715 |            19378
+      2019 |           456417 |            19342
+(10 rows)
+
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=262291.08..285052.47 rows=195084 width=84) (actual time=214.963..238.229 rows=168277 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=261291.06..261534.91 rows=97542 width=84) (actual time=207.486..211.289 rows=56092 loops=3)
+         Sort Key: startyear
+         Sort Method: external merge  Disk: 5216kB
+         Worker 0:  Sort Method: external merge  Disk: 5304kB
+         Worker 1:  Sort Method: external merge  Disk: 5352kB
+         ->  Parallel Bitmap Heap Scan on title_basics  (cost=1480.21..248538.88 rows=97542 width=84) (actual time=10.548..192.784 rows=56092 loops=3)
+               Recheck Cond: ((startyear >= 2010) AND (startyear <= 2019) AND ((titletype)::text = 'movie'::text))
+               Rows Removed by Index Recheck: 721050
+               Heap Blocks: exact=13517 lossy=10970
+               ->  Bitmap Index Scan on idx_title_basics_movies_2010s  (cost=0.00..1421.68 rows=234101 width=0) (actual time=12.686..12.686 rows=168277 loops=1)
+ Planning Time: 0.218 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.437 ms (Deform 0.179 ms), Inlining 0.000 ms, Optimization 0.324 ms, Emission 5.455 ms, Total 6.215 ms
+ Execution Time: 242.276 ms
+(19 rows)
+
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Gather Merge  (cost=277428.15..310594.13 rows=284260 width=84) (actual time=267.809..325.029 rows=441034 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Sort  (cost=276428.12..276783.45 rows=142130 width=84) (actual time=259.694..271.128 rows=147011 loops=3)
+         Sort Key: startyear
+         Sort Method: external merge  Disk: 14296kB
+         Worker 0:  Sort Method: external merge  Disk: 12288kB
+         Worker 1:  Sort Method: external merge  Disk: 13088kB
+         ->  Parallel Seq Scan on title_basics  (cost=0.00..257460.03 rows=142130 width=84) (actual time=2.142..235.137 rows=147011 loops=3)
+               Filter: (((titletype)::text = 'movie'::text) AND ((startyear < 2010) OR (startyear > 2019)))
+               Rows Removed by Filter: 3736327
+ Planning Time: 0.134 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.619 ms (Deform 0.194 ms), Inlining 0.000 ms, Optimization 0.364 ms, Emission 5.928 ms, Total 6.911 ms
+ Execution Time: 335.413 ms
+(17 rows)
+
+           indexname           | index_size 
+-------------------------------+------------
+ idx_title_basics_startyear    | 77 MB
+ idx_title_basics_movies_2010s | 1160 kB
+(2 rows)
+
+           indexname           |                                                                                        indexdef                                                                                         
+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ idx_title_basics_startyear    | CREATE INDEX idx_title_basics_startyear ON public.title_basics USING btree (startyear)
+ idx_title_basics_movies_2010s | CREATE INDEX idx_title_basics_movies_2010s ON public.title_basics USING btree (startyear) WHERE (((startyear >= 2010) AND (startyear <= 2019)) AND ((titletype)::text = 'movie'::text))
+(2 rows)
+
