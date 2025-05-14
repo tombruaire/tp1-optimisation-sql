@@ -1,0 +1,16 @@
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..277610.20 rows=312856 width=24) (actual time=9.481..612.675 rows=332139 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..245324.60 rows=130357 width=24) (actual time=5.463..587.558 rows=110713 loops=3)
+         Filter: (((genres)::text ~~ 'Action%'::text) AND (startyear > 2000))
+         Rows Removed by Filter: 3772626
+ Planning Time: 1.274 ms
+ JIT:
+   Functions: 12
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 1.168 ms (Deform 0.682 ms), Inlining 0.000 ms, Optimization 1.094 ms, Emission 14.410 ms, Total 16.672 ms
+ Execution Time: 679.203 ms
+(12 rows)
+
