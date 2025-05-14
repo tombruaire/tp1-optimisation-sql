@@ -1,0 +1,67 @@
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..286422.07 rows=522329 width=84) (actual time=5.290..565.443 rows=599915 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233189.17 rows=217637 width=84) (actual time=3.176..539.213 rows=199972 loops=3)
+         Filter: ((primarytitle)::text ~~ 'The%'::text)
+         Rows Removed by Filter: 3683367
+ Planning Time: 6.525 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.412 ms (Deform 0.166 ms), Inlining 0.000 ms, Optimization 0.758 ms, Emission 8.548 ms, Total 9.718 ms
+ Execution Time: 609.261 ms
+(12 rows)
+
+                                                               QUERY PLAN                                                                
+-----------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on title_basics  (cost=5.58..520.38 rows=131 width=84) (actual time=1.005..1.388 rows=43 loops=1)
+   Recheck Cond: ((primarytitle)::text = 'The Godfather'::text)
+   Heap Blocks: exact=43
+   ->  Bitmap Index Scan on idx_title_basics_primarytitle  (cost=0.00..5.54 rows=131 width=0) (actual time=0.989..0.989 rows=43 loops=1)
+         Index Cond: ((primarytitle)::text = 'The Godfather'::text)
+ Planning Time: 0.304 ms
+ Execution Time: 1.413 ms
+(7 rows)
+
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..234292.57 rows=1034 width=84) (actual time=150.487..311.623 rows=43 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233189.17 rows=431 width=84) (actual time=55.902..301.416 rows=14 loops=3)
+         Filter: ((primarytitle)::text ~~ '%The'::text)
+         Rows Removed by Filter: 3883324
+ Planning Time: 0.049 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.340 ms (Deform 0.136 ms), Inlining 0.000 ms, Optimization 0.349 ms, Emission 4.798 ms, Total 5.486 ms
+ Execution Time: 311.754 ms
+(12 rows)
+
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..286422.07 rows=522329 width=84) (actual time=1.423..315.398 rows=760179 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233189.17 rows=217637 width=84) (actual time=1.911..291.896 rows=253393 loops=3)
+         Filter: ((primarytitle)::text ~~ '%The%'::text)
+         Rows Removed by Filter: 3629946
+ Planning Time: 0.066 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.348 ms (Deform 0.154 ms), Inlining 0.000 ms, Optimization 0.328 ms, Emission 5.285 ms, Total 5.961 ms
+ Execution Time: 332.542 ms
+(12 rows)
+
+                                                                            QUERY PLAN                                                                            
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.56..9.24 rows=100 width=84) (actual time=1.088..1.841 rows=100 loops=1)
+   ->  Index Scan using idx_title_basics_primarytitle on title_basics  (cost=0.56..1010642.69 rows=11650016 width=84) (actual time=1.087..1.831 rows=100 loops=1)
+ Planning Time: 0.153 ms
+ Execution Time: 1.859 ms
+(4 rows)
+

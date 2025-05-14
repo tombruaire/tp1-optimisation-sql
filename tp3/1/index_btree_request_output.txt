@@ -1,0 +1,16 @@
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..286422.07 rows=522329 width=84) (actual time=19.302..337.074 rows=599915 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..233189.17 rows=217637 width=84) (actual time=9.523..308.443 rows=199972 loops=3)
+         Filter: ((primarytitle)::text ~~ 'The%'::text)
+         Rows Removed by Filter: 3683367
+ Planning Time: 3.718 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.681 ms (Deform 0.185 ms), Inlining 0.000 ms, Optimization 2.613 ms, Emission 25.834 ms, Total 29.128 ms
+ Execution Time: 600.754 ms
+(12 rows)
+
