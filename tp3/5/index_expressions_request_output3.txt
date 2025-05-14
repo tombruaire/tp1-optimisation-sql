@@ -1,0 +1,16 @@
+                                                            QUERY PLAN                                                             
+-----------------------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..246441.10 rows=1165 width=84) (actual time=4.381..1057.117 rows=7476 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   ->  Parallel Seq Scan on title_basics  (cost=0.00..245324.60 rows=485 width=84) (actual time=3.591..1046.624 rows=2492 loops=3)
+         Filter: (lower((primarytitle)::text) ~~ '%star wars%'::text)
+         Rows Removed by Filter: 3880847
+ Planning Time: 1.616 ms
+ JIT:
+   Functions: 6
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.443 ms (Deform 0.152 ms), Inlining 0.000 ms, Optimization 0.788 ms, Emission 6.978 ms, Total 8.209 ms
+ Execution Time: 1069.193 ms
+(12 rows)
+
