@@ -1,0 +1,17 @@
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on title_basics  (cost=734.24..129960.67 rows=19427 width=84) (actual time=16.241..295.180 rows=20949 loops=1)
+   Recheck Cond: (startyear = 1994)
+   Filter: ((genres)::text ~~ '%Drama%'::text)
+   Rows Removed by Filter: 47577
+   Heap Blocks: exact=20736
+   ->  Bitmap Index Scan on idx_title_basics_startyear  (cost=0.00..729.38 rows=66793 width=0) (actual time=7.971..7.972 rows=68526 loops=1)
+         Index Cond: (startyear = 1994)
+ Planning Time: 1.071 ms
+ JIT:
+   Functions: 4
+   Options: Inlining false, Optimization false, Expressions true, Deforming true
+   Timing: Generation 0.357 ms (Deform 0.201 ms), Inlining 0.000 ms, Optimization 0.675 ms, Emission 5.542 ms, Total 6.574 ms
+ Execution Time: 329.085 ms
+(13 rows)
+
