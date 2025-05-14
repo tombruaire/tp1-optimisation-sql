@@ -1,0 +1,4 @@
+EXPLAIN ANALYZE
+SELECT *
+FROM title_basics
+WHERE tconst = 'tt0068646';

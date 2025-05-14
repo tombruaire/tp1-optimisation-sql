@@ -1,0 +1,8 @@
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using title_basics_pkey on title_basics  (cost=0.43..8.45 rows=1 width=84) (actual time=2.378..2.378 rows=1 loops=1)
+   Index Cond: ((tconst)::text = 'tt0068646'::text)
+ Planning Time: 1.046 ms
+ Execution Time: 2.446 ms
+(4 rows)
+
