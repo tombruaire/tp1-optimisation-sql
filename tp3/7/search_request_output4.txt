@@ -1,0 +1,29 @@
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3981.05..3981.30 rows=100 width=46) (actual time=266.109..266.116 rows=100 loops=1)
+   ->  Sort  (cost=3981.05..3983.64 rows=1034 width=46) (actual time=266.108..266.111 rows=100 loops=1)
+         Sort Key: startyear DESC
+         Sort Method: top-N heapsort  Memory: 41kB
+         ->  Bitmap Heap Scan on title_basics  (cost=43.72..3941.53 rows=1034 width=46) (actual time=15.936..265.188 rows=5707 loops=1)
+               Recheck Cond: ((primarytitle)::text ~~ '%love%'::text)
+               Rows Removed by Index Recheck: 64711
+               Heap Blocks: exact=50827
+               ->  Bitmap Index Scan on idx_title_basics_primarytitle_trgm  (cost=0.00..43.46 rows=1034 width=0) (actual time=10.760..10.760 rows=70418 loops=1)
+                     Index Cond: ((primarytitle)::text ~~ '%love%'::text)
+ Planning Time: 1.929 ms
+ Execution Time: 266.240 ms
+(12 rows)
+
+                                                                                     QUERY PLAN                                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1000.46..4519.07 rows=100 width=84) (actual time=35.460..62.721 rows=100 loops=1)
+   ->  Gather Merge  (cost=1000.46..2050592.39 rows=58250 width=84) (actual time=35.460..62.713 rows=100 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Parallel Index Scan Backward using idx_title_basics_startyear on title_basics  (cost=0.43..2042868.87 rows=24271 width=84) (actual time=0.723..30.684 rows=100 loops=3)
+               Filter: (to_tsvector('english'::regconfig, (primarytitle)::text) @@ '''love'''::tsquery)
+               Rows Removed by Filter: 13339
+ Planning Time: 0.827 ms
+ Execution Time: 62.743 ms
+(9 rows)
+

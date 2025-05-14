@@ -1,0 +1,13 @@
+                                                                                    QUERY PLAN                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1000.46..81217.52 rows=100 width=46) (actual time=96.794..447.638 rows=100 loops=1)
+   ->  Gather Merge  (cost=1000.46..830444.91 rows=1034 width=46) (actual time=96.793..447.620 rows=100 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Parallel Index Scan Backward using idx_title_basics_startyear on title_basics  (cost=0.43..829325.54 rows=431 width=46) (actual time=2.304..164.910 rows=100 loops=3)
+               Filter: ((primarytitle)::text ~~ '%love%'::text)
+               Rows Removed by Filter: 171176
+ Planning Time: 0.848 ms
+ Execution Time: 447.666 ms
+(9 rows)
+

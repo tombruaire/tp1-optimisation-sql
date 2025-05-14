@@ -1,0 +1,16 @@
+                                                                          QUERY PLAN                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3981.05..3981.30 rows=100 width=46) (actual time=271.659..271.675 rows=100 loops=1)
+   ->  Sort  (cost=3981.05..3983.64 rows=1034 width=46) (actual time=271.657..271.668 rows=100 loops=1)
+         Sort Key: startyear DESC
+         Sort Method: top-N heapsort  Memory: 41kB
+         ->  Bitmap Heap Scan on title_basics  (cost=43.72..3941.53 rows=1034 width=46) (actual time=14.661..270.582 rows=5707 loops=1)
+               Recheck Cond: ((primarytitle)::text ~~ '%love%'::text)
+               Rows Removed by Index Recheck: 64711
+               Heap Blocks: exact=50827
+               ->  Bitmap Index Scan on idx_title_basics_primarytitle_trgm  (cost=0.00..43.46 rows=1034 width=0) (actual time=9.903..9.909 rows=70418 loops=1)
+                     Index Cond: ((primarytitle)::text ~~ '%love%'::text)
+ Planning Time: 1.512 ms
+ Execution Time: 271.781 ms
+(12 rows)
+
